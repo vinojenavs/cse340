@@ -18,15 +18,23 @@ const app = express();
 //Tells express that any file from public directory should be accessible directly through the website
 app.use(express.static(path.join(__dirname, 'public')));
 
+//Set EJS as the templating engine
+app.set('view engine', 'ejs');
+//Tell Express where to find templates
+app.set('views', path.join(__dirname, 'src/views'));
+
 //Gets the file 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/views/home.html'));
+app.get('/', async (req, res) => {
+    const title = 'Home';
+    res.render('home', { title });
 });
-app.get('/organizations', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/views/organizations.html'));
+app.get('/organizations', async (req, res) => {
+    const title = 'Our Partner Organizations'
+    res.render('organizations', { title });
 });
 app.get('/projects', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/views/projects.html'));
+    const title = 'Service Projects'
+    res.render('projects', { title });
 });
 
 
