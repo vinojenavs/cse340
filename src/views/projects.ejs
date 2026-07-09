@@ -3,9 +3,13 @@
     <h1><%= title %></h1>
     <h2>Upcoming Service Projects</h2>
     <ul>
-        <li>Park Cleanup - Join us to clean up local parks and make them beautiful!</li>
-        <li>Food Drive - Help collect and distribute food to those in need.</li>
-        <li>Community Tutoring - Volunteer to tutor students in various subjects.</li>
+        <% projects.forEach(project=> { %>
+            <li class="projects">
+                <h3><%= project.title %></h3><br>
+                <strong>Description:</strong> <%= project.description %><br>
+                <p>Project will be executed on <%= project.project_date.toDateString() %> at <%= project.location %> by <%= project.name %></p><br> 
+            </li>
+       <% }); %>
     </ul>
 </main>
 <%- include('partials/footer') %>
