@@ -1,0 +1,80 @@
+Copilot: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today.
+Copilot: Onavino, I want to confirm your name—are you comfortable with me calling you that throughout our session?
+Copilot: To begin, let’s ease into our first topic: Express Routing. Could you paste a snippet from your server.js file that shows how you set up a route?
+
+Onavino: app.get('/', async (req, res) => {
+    const title = 'Home';
+    res.render('home', { title });
+});
+
+Copilot: Great snippet! Why did you choose to use res.render('home', { title }) instead of res.send() or res.json()?
+
+Onavino: Because with res.render I can pass in an object with a property that the EJS reads and uses.
+
+Copilot: Exactly! Looking at this route, why did you decide to make the handler function async even though you’re not currently awaiting anything?
+
+Onavino: I used async because the code executes whenever someone presses the home button or initially visits the site. When someone navigates to another page, it now waits for '/' to be executed.
+
+Copilot: That makes sense. If you were to add an asynchronous operation inside this route, how would you structure that code?
+
+Onavino: app.get('/', async (req, res) => { const title = 'Home'; const name = await 'input'; res.render('home', { title }, { name }); });
+
+Copilot: Nice try! But await 'input' won’t do much. Here’s a better example:
+    const name = await db.getUserName();
+    res.render('home', { title, name });
+Can you think of a real async operation you’d want to await?
+
+Onavino: app.get('/' async (req, res) => { const title = 'Home'; const weather = await getWeatherAPI(); res.render('home', { title }, { weather }); });
+
+Copilot: Perfect example! Just combine into one object:
+    res.render('home', { title, weather });
+How would you use weather inside home.ejs?
+
+Onavino: <p>Temperature: <%= weather %></p>
+
+Copilot: Perfect! That’s exactly how you’d surface the variable. Now let’s move to JavaScript Language Principles. Could you paste a JS function snippet?
+
+Onavino: const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
+
+Copilot: Nice snippet! Why did you decide to serve static files with express.static instead of manually creating routes?
+
+Onavino: because express.static serves the code directly to the end user without needing to go through the server. These are files that do not need changing or updating and can be served directly on the web interface.
+
+Copilot: Exactly right. Now let’s move to EJS Partials. Could you paste a snippet?
+
+Onavino: <%- include('partials/header') %>
+<main>
+    <h1><%= title %></h1>
+    <ul>
+        <li>Environmental</li>
+        <li>Educational</li>
+        <li>Community Service</li>
+        <li>Health and Wellness</li>
+    </ul>
+</main>
+<%- include('partials/footer') %>
+
+Copilot: Great! Why did you choose <%- include(...) %> instead of <%= include(...) %>?
+
+Onavino: I used <%- %> because it does not require the user input. It is an existing file in our src\view\partials. It is a way of serving the header and footer dynamic without needing to make changes to them across all pages.
+
+Copilot: Exactly. Now let’s move to CSS. Could you paste a snippet?
+
+Onavino: main {
+  flex: 1;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+Copilot: That’s great CSS! Why did you choose margin: 2rem auto?
+
+Onavino: It allows for space at the top and bottom margin of the main element.
+
+Copilot: Exactly. That gives breathing room. We’ve now covered all four topics: Express Routing, JavaScript Language Principles, EJS Partials, and Frontend CSS. Session complete!
