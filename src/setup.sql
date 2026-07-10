@@ -45,3 +45,45 @@ INSERT INTO projects (title, description, location, project_date, organization_i
 ('Literacy Mentorship Program', 'Training volunteers to mentor children in reading and writing skills.', 'Kaduna, Nigeria', '2026-10-18', 3),
 ('Disaster Relief Support Team', 'Mobilizing volunteers to provide aid during flooding emergencies.', 'Bayelsa, Nigeria', '2026-11-14', 3),
 ('Holiday Toy Distribution', 'Collecting and distributing toys to children in orphanages during the holiday season.', 'Lagos, Nigeria', '2026-12-20', 3);
+
+CREATE TABLE categories (
+	category_id INT PRIMARY KEY,
+	name char(150) NOT NULL
+);
+
+INSERT INTO categories(category_id, name) VALUES
+	(1, 'Energy and Environment'),
+	(2, 'Food and Education'),
+	(3, 'Community and Social Support');
+
+SELECT * FROM categories;
+
+CREATE TABLE project_categories (
+	category_id INT NOT NULL,
+	project_id INT NOT NULL,
+	CONSTRAINT fk_category_id
+	FOREIGN KEY (category_id)
+	REFERENCES categories (category_id)
+	ON DELETE CASCADE,
+	CONSTRAINT fk_project_id
+	FOREIGN KEY (project_id)
+	REFERENCES projects (project_id)
+	ON DELETE CASCADE
+);
+
+INSERT INTO project_categories (category_id, project_id) VALUES
+	(1, 1),
+	(1, 8),
+	(1, 14),
+	(1, 3),
+	(1, 9),
+	(2, 7),
+	(2, 13),
+	(2, 11),
+	(2, 6),
+	(2, 4),
+	(3, 5),
+	(3, 10),
+	(3, 12),
+	(3, 15),
+	(3, 2);
