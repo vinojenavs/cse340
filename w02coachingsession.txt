@@ -1,0 +1,101 @@
+Week 02 Coaching Session Transcript
+
+Copilot: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today. Onavino, before we dive into the technical topics, let’s confirm: this is your safe learning space, and mistakes are part of the process. To begin, let’s tackle Topic 1: Relational Database Design and Structure. Could you paste a snippet of your SQL code that defines one of your tables?
+
+Onavino: 
+CREATE TABLE projects (
+    project_id SERIAL PRIMARY KEY,
+    title char(150) NOT NULL,
+    description text NOT NULL,
+    location char(200) NOT NULL,
+    project_date date,
+    organization_id INT NOT NULL,
+    CONSTRAINT fk_organization
+    FOREIGN KEY (organization_id)
+    REFERENCES organization (organization_id)
+    ON DELETE CASCADE
+);
+
+Copilot: Great snippet, Onavino! I see you’ve set up a projects table with a foreign key linking to the organization table, and you’ve chosen ON DELETE CASCADE. My single question: What made you decide to use ON DELETE CASCADE?
+
+Onavino: It maintains data integrity. As many projects can belong to one organization, if that organization seizes to exist, the projects should seize to exist also.
+
+Copilot: Exactly—that’s a thoughtful justification. Let’s move into Topic 2: Server-Side Data Access Logic (Node.js). Could you paste a snippet of your Node.js code?
+
+Onavino:
+import db from "./db.js";
+
+const getAllProjectServices = async () => {
+    const query = `
+    SELECT title, pro.description, location, project_date, name 
+    FROM public.organization org JOIN public.projects pro
+    ON org.organization_id = pro.organization_id;`
+    const result = await db.query(query);
+    return result.rows;
+}
+
+export { getAllProjectServices }
+
+Copilot: Nice work, Onavino! My single question: Did you choose to write the raw SQL directly in your service function mainly for simplicity, or did you consider using a query builder/ORM?
+
+Onavino: I do not understand your question clearly could you rephrase?
+
+Copilot: Sure. Did you choose raw SQL mainly for simplicity, or did you think about using a query builder/ORM?
+
+Onavino: It's for simplicity. It's actually the only way I know how to. Could you write a code on the other example?
+
+Copilot: Perfect. Here’s an ORM (Sequelize) example… [Sequelize code shown]. My single question: Do you feel the extra setup would be worth it, or do you prefer raw SQL for now?
+
+Onavino: I prefer the simplicity for now but I would take out time to study the example later on.
+
+Copilot: That makes perfect sense. Now, Topic 3: Express Server Logic and Routing. Could you paste a snippet from your Express server file?
+
+Onavino:
+app.get('/projects', async (req, res) => {
+    const title = 'Service Projects'
+    const projects = await getAllProjectServices();
+    res.render('projects', { title, projects });
+});
+
+Copilot: That’s a neat route handler. My single question: Did you think of this route mainly as a way to deliver dynamic data, or to organize your server code?
+
+Onavino: I actually considered both scenarios. I wanted to deliver dynamic data, hence the title, and I also wanted to organize my server code.
+
+Copilot: That’s a balanced approach. Now Topic 4: Client-Side Rendering (EJS Templates). Could you paste a snippet from your EJS file?
+
+Onavino:
+<%- include('partials/header') %>
+<main>
+    <h1><%= title %></h1>
+    <h2>Upcoming Service Projects</h2>
+    <ul>
+        <% projects.forEach(project=> { %>
+            <li class="projects">
+                <h3><%= project.title %></h3><br>
+                <strong>Description:</strong> <%= project.description %><br>
+                <p>Project will be executed on <%= project.project_date.toDateString() %> at <%= project.location %> by <%= project.name %></p><br> 
+            </li>
+       <% }); %>
+    </ul>
+</main>
+<%- include('partials/footer') %>
+
+Copilot: That’s a solid EJS template. My single question: Did you focus more on making the template readable for yourself, or for the end user?
+
+Onavino: I chose this template because it was ideal to display the data in a text format that can be read and understood by the end user.
+
+Copilot: That’s a smart choice. We’ve now covered all four required topics. Would you like me to generate the transcript file?
+
+Onavino: Is there any other question you'd like to ask me before we conclude?
+
+Copilot: One final reflective question: Looking back at all four layers, where do you feel the biggest gap in your understanding still is?
+
+Onavino: If you ask me I'd like for you to compare the raw SQL to using query builder/ORM.
+
+Copilot: Great reflection. [Comparison table shown]. My single question: Which approach would fit best once your project grows?
+
+Onavino: My project is not expected to grow past 50 projects so I may stick with the Raw SQL. I may apply the query builder and ORM on other projects to expand my understanding. Thank you very much for this.
+
+Copilot: That’s a wise decision. We’ve now fully completed the coaching session. I’ll prepare the full transcript in a .txt file so you can download and keep it.
+
+
