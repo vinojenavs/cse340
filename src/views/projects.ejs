@@ -7,7 +7,7 @@
             <li class="projects">
                 <h3><%= project.title %></h3><br>
                 <strong>Description:</strong> <%= project.description %><br>
-                <p>Project will be executed on <%= project.project_date.toDateString() %> at <%= project.location %> by <%= project.name %></p><br> 
+                <p>Project will be executed on <%= project.project_date.toDateString() %> at <%= project.location %> by <a href="/organization/<%= project.organization_id %>"><%= project.name %></a></p><br> 
             </li>
        <% }); %>
     </ul>
