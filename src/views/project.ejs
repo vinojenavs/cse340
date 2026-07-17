@@ -5,7 +5,12 @@
     <p><%= projectDetail.description %></p>
     <p><strong>Commencement Date: </strong><%= projectDetail.project_date.toDateString() %></p>
     <p><strong>Location: </strong><%= projectDetail.location %></p>
-    <p><a href="/organization/<%= projectDetail.organization_id %>"><%= projectDetail.name %></a></p> 
+    <p><strong>Organization Conducting Project: </strong><a href="/organization/<%= projectDetail.organization_id %>"><%= projectDetail.name %></a></p>
+    <p><strong>Categories</strong></p>
+    <p><% categories.forEach(category => { %> 
+            <p><a href="/category/<%= category.category_id%>"><%= category.name %></a></p>
+        <% }) %>
+    </p>
 </main>
 
 <%- include('partials/footer') %>
