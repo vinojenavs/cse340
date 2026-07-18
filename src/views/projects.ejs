@@ -5,7 +5,7 @@
     <ul>
         <% projects.forEach(project=> { %>
             <li class="projects">
-                <h3><%= project.title %></h3><br>
+                <a href="/project/<%= project.project_id %>"><h3><%= project.title %></h3><br></a>
                 <strong>Description:</strong> <%= project.description %><br>
                 <p>Project will be executed on <%= project.project_date.toDateString() %> at <%= project.location %> by <a href="/organization/<%= project.organization_id %>"><%= project.name %></a></p><br> 
             </li>
