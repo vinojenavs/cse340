@@ -16,6 +16,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Allow Express to receive and process common POST data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 /** Configure Express Middleware */
 //Tells express that any file from public directory should be accessible directly through the website
 app.use(express.static(path.join(__dirname, 'public')));

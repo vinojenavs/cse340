@@ -56,8 +56,6 @@ INSERT INTO categories(category_id, name) VALUES
 	(2, 'Food and Education'),
 	(3, 'Community and Social Support');
 
-SELECT * FROM categories;
-
 CREATE TABLE project_categories (
 	category_id INT NOT NULL,
 	project_id INT NOT NULL,

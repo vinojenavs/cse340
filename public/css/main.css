@@ -113,3 +113,64 @@ a {
 a:hover {
   color: #0066cc;
 }
+
+
+/* General form styling */
+form {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+/* Form groups */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Labels */
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Inputs and textarea */
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+/* Button */
+button {
+  display: inline-block;
+  width: 100%;
+  padding: 12px;
+  background: #0056b3;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #004080;
+}

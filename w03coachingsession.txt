@@ -1,0 +1,88 @@
+Week 03 Coaching Session Transcript
+
+Copilot: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today.
+
+Copilot: This is a safe space, Onavino, and mistakes are part of the process. Before we dive into the technical topics, let’s confirm something important: I’ll need you to paste code snippets directly into the chat whenever we discuss a piece of your work. That way, we can look at the exact lines together. To begin, let’s start with Topic 1: Models. Could you paste a non-trivial code snippet from one of your model functions—specifically one that accepts a parameter and uses it in an SQL query?
+
+Onavino: 
+const getCategoriesByProjectId = async (projectId) => {
+    const query = `
+    SELECT name, cat.category_id, pro.project_id, title
+    FROM public.categories cat JOIN public.project_categories procat
+    ON cat.category_id = procat.category_id
+    JOIN public.projects pro
+    ON procat.project_id = pro.project_id
+    WHERE pro.project_id = $1`;
+
+    const queryParams = [projectId];
+    const result = await db.query(query, queryParams);
+    return result.rows;
+};
+
+Copilot: That’s a solid snippet, Onavino. You’re clearly joining multiple tables and filtering by a parameter, which shows you understand how to structure queries beyond the basics. I notice you’re using $1 with queryParams to safely insert the projectId—that’s a good practice for avoiding SQL injection. Why did you decide to structure this query with multiple JOINs instead of, say, separate queries or a subquery?
+
+Onavino: With multiple joins I can pass the function easily on ejs. It keeps the code simpler.
+
+Copilot: That makes sense—using joins can definitely simplify things when you want to pass a single, rich dataset into your EJS views instead of juggling multiple queries. Let’s move on to Topic 2: Views. Could you paste a non-trivial EJS snippet from your project—specifically one where you insert data into a link?
+
+Onavino:
+<% projects.forEach(project=> { %>
+    <li class="projects">
+        <a href="/project/<%= project.project_id %>"><h3><%= project.title %></h3><br></a>
+        <strong>Description:</strong> <%= project.description %><br>
+        <p>Project will be executed on <%= project.project_date.toDateString() %> at <%= project.location %> by <a href="/organization/<%= project.organization_id %>"><%= project.name %></a></p><br> 
+    </li>
+<% }); %>
+
+Copilot: Great snippet, Onavino! I like how you’re looping through projects and dynamically inserting IDs into the links. That makes your routes flexible and ensures each project and organization gets its own detail page. It’s also neat that you’re formatting the date with toDateString(). When you designed those links, how did you decide which data should be passed through the URL versus which data should just be displayed on the page?
+
+Onavino: The data passed through the url contain further details of the project and organization that do not need to be displayed in the project page. The project page is more of a listing and can list as much projects in the database. Details on them are found elsewhere.
+
+Copilot: That’s a thoughtful design choice—you’re essentially saying, “only IDs go in the URL because they unlock deeper detail pages,” while the descriptive fields stay visible in the listing. Let’s move forward to Topic 3: Controllers. Could you paste a controller route handler snippet that uses a route parameter?
+
+Onavino:
+const organizationDetailPage = async (req, res) => {
+    const organizationId = req.params.id;
+    const organizationDetails = await getOrganizationDetails(organizationId);
+    const projects = await getProjectsByOrganizationId(organizationId);
+    const title = 'Organization Details';
+    res.render('organization', { title, organizationDetails, projects });
+};
+
+Copilot: Nice work, Onavino. I see how you’re pulling the id from req.params and then using it to fetch both organization details and related projects. That’s a clean way to keep your controller focused on orchestrating data and then passing everything neatly into the view. When you designed this controller, how did you decide what logic belongs here versus what should stay inside the model functions?
+
+Onavino: The model data contained the query and the query parameter and passes them into a function. The controller calls these function and renders them. Exporting it to the routes.js following the mvc principle of writing code.
+
+Copilot: Exactly—that’s a textbook application of the MVC principle. You’ve kept the SQL logic tucked away in the model, while the controller just orchestrates which functions to call and what data to pass to the view. Now let’s move into Topic 4: Error Handling. Could you paste a snippet that shows how you handle errors in your application?
+
+Onavino:
+app.use((err, req, res, next) => {
+    console.error('Error occurred:', err.message);
+    console.error('Stack trace:', err.stack);
+    const status = err.status || 500;
+    const template = status === 404 ? '404' : '500';
+    const context = {
+        title: status === 404 ? 'Page Not Found' : 'Server Error',
+        error: err.message,
+        stack: err.stack
+    };
+    res.status(status).render(`errors/${template}`, context);
+});
+
+Copilot: That’s a strong error-handling setup, Onavino. You’re logging both the message and stack trace for debugging, then cleanly distinguishing between 404 and 500 cases with separate templates. When you designed this error middleware, what was your main priority—was it more about helping developers debug issues, or about giving end-users a clear and friendly experience?
+
+Onavino: I considered both cause a users recieve a userfriendly error page while developers get a more detailed error allowing them to trace the errors to files in their code.
+
+Copilot: That’s a balanced approach—you’ve thought about both sides of the equation. We’ve now covered all four required topics: Models, Views, Controllers, and Error Handling. That means our coaching session is complete. 🎉 Would you like me to generate that transcript file for you now?
+
+Onavino: I have one question for you before we conclude. In a condition when you have to pass multiple queryparameters in a query function, do I use $1, $2, and so on or is there another way to write the code?
+
+Copilot: Great question, Onavino. Yes—you’d use $1, $2, $3, and so on for multiple parameters in a single query. Each placeholder corresponds to the position of the value in your queryParams array. Example given. My coaching question: when you imagine a query with three or more parameters, how would you decide the order of $1, $2, $3 in the SQL versus the order in your queryParams array?
+
+Onavino: const getItemByFilters = async (price, brand) => {
+
+Copilot: Exactly, Onavino—you’re on the right track. Example given. My coaching question: when you imagine scaling this to more filters (say 4–5 parameters), how would you keep the query readable and maintainable rather than letting it get messy?
+
+Onavino: I would've written the entire code but I pressed enter on my keyboard by accident. But I understand the concept now. Thank you so much.
+
+Copilot: I’m glad that clicked for you, Onavino. You’ve got the right idea. For larger queries, developers often use techniques like breaking the query into smaller reusable functions, or building dynamic queries with libraries such as Knex.js or Sequelize. We’ve now fully covered Models, Views, Controllers, and Error Handling, and even explored your extra question. That means our coaching session is complete. 🎉
