@@ -3,18 +3,32 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import { testConnection } from './src/models/db.js';
 import router from './src/routes.js';
+import session from 'express-session';
+import flash from './src/middleware/flash.js';
 
 //Define application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 //Define port number for server
 const PORT = process.env.PORT || 3000;
-
+//Load secret session from environment variables
+const SESSION_SECRET = process.env.SESSION_SECRET;
 //Converts the URL of the current module to a file system path.
 const __filename = fileURLToPath(import.meta.url);
 //extracts just the directory name
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Set up session management
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60 * 60 * 1000 } // Session expires after 1 hour of inactivity
+}));
+
+// Use flash messages middleware
+app.use(flash);
 
 // Allow Express to receive and process common POST data
 app.use(express.urlencoded({ extended: true }));
