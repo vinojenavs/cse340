@@ -55,4 +55,49 @@ const getProjectDetails = async (projectId) => {
   return result.rows.length > 0 ? result.rows[0] : null;;
 };
 
-export { getProjectsByOrganizationId, getUpcomingProjects, getProjectDetails }
+const createProject = async (title, description, location, date, organizationId) => {
+    const query = `
+      INSERT INTO projects (title, description, location, project_date, organization_id)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING project_id;
+    `;
+
+    const queryParams = [title, description, location, date, organizationId];
+    const result = await db.query(query, queryParams);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to create project');
+    }
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('Created new project with ID:', result.rows[0].project_id);
+    }
+
+    return result.rows[0].project_id;
+};
+
+const showNewProjectForm = async (req, res) => {
+    const organizations = await getAllOrganizations();
+    const title = 'Add New Service Project';
+
+    res.render('new-project', { title, organizations });
+};
+
+const processNewProjectForm = async (req, res) => {
+    // Extract form data from req.body
+    const { title, description, location, date, organizationId } = req.body;
+
+    try {
+        // Create the new project in the database
+        const newProjectId = await createProject(title, description, location, date, organizationId);
+
+        req.flash('success', 'New service project created successfully!');
+        res.redirect(`/project/${newProjectId}`);
+    } catch (error) {
+        console.error('Error creating new project:', error);
+        req.flash('error', 'There was an error creating the service project.');
+        res.redirect('/new-project');
+    }
+};
+
+export { getProjectsByOrganizationId, getUpcomingProjects, getProjectDetails, createProject, showNewProjectForm, processNewProjectForm }

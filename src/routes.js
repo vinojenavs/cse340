@@ -1,7 +1,7 @@
 import express from 'express';
 import { homePage } from './controllers/index.js';
-import { organizationsPage, organizationDetailPage, processNewOrganization, newOrganizationForm, organizationValidation } from './controllers/organizations.js';
-import { projectsPage, projectDetailPage } from './controllers/projects.js';
+import { organizationsPage, organizationDetailPage, processNewOrganization, newOrganizationForm, organizationValidation, editOrganizationForm, processEditOrganizationForm } from './controllers/organizations.js';
+import { projectsPage, projectDetailPage, showNewProjectForm, processNewProjectForm, projectValidation } from './controllers/projects.js';
 import { categoriesPage, categoriesDetailPage } from './controllers/categories.js';
 import { errorPage } from './controllers/error.js';
 
@@ -17,6 +17,10 @@ router.get('/project/:id', projectDetailPage);
 router.get('/category/:id', categoriesDetailPage);
 router.get('/new-organization', newOrganizationForm);
 router.post('/new-organization', organizationValidation, processNewOrganization);
+router.get('/edit-organization/:id', editOrganizationForm);
+router.post('/edit-organization/:id', organizationValidation, processEditOrganizationForm);
+router.get('/new-project', showNewProjectForm);
+router.post('/new-project', projectValidation, processNewProjectForm);
 
 // error-handling routes
 router.get('/test-error', errorPage);
