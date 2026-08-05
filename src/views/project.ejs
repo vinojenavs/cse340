@@ -11,6 +11,7 @@
             <p><a href="/category/<%= category.category_id%>"><%= category.name %></a></p>
         <% }) %>
     </p>
+    <a href="/assign-categories/<%= projectDetail.project_id %>">Edit Categories</a>
 </main>
 
 <%- include('partials/footer') %>
