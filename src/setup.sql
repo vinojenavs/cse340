@@ -47,14 +47,14 @@ INSERT INTO projects (title, description, location, project_date, organization_i
 ('Holiday Toy Distribution', 'Collecting and distributing toys to children in orphanages during the holiday season.', 'Lagos, Nigeria', '2026-12-20', 3);
 
 CREATE TABLE categories (
-	category_id INT PRIMARY KEY,
+	category_id SERIAL PRIMARY KEY,
 	name char(150) NOT NULL
 );
 
-INSERT INTO categories(category_id, name) VALUES
-	(1, 'Energy and Environment'),
-	(2, 'Food and Education'),
-	(3, 'Community and Social Support');
+INSERT INTO categories(name) VALUES
+	('Energy and Environment'),
+	('Food and Education'),
+	('Community and Social Support');
 
 CREATE TABLE project_categories (
 	category_id INT NOT NULL,
