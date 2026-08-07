@@ -175,30 +175,38 @@ button:hover {
   background: #004080;
 }
 
-/* Flash message styles */
-.alert {
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid transparent;
-    border-radius: 4px;
+/* Base flash message style */
+.flash-message {
+  padding: 12px 16px;
+  margin: 10px 0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-.alert.success {
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
+
+/* Success messages */
+.flash-success {
+  background-color: #28a745;
+  border-left: 5px solid #1e7e34;
 }
-.alert.error {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
+
+/* Error messages */
+.flash-error {
+  background-color: #dc3545;
+  border-left: 5px solid #b21f2d;
 }
-.alert.warning {
-    color: #856404;
-    background-color: #fff3cd;
-    border-color: #ffeeba;
+
+/* Warning messages */
+.flash-warning {
+  background-color: #ffc107;
+  color: #212529;
+  border-left: 5px solid #d39e00;
 }
-.alert.info {
-    color: #0c5460;
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
+
+/* Info messages */
+.flash-info {
+  background-color: #17a2b8;
+  border-left: 5px solid #117a8b;
 }
