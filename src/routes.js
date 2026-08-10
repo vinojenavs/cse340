@@ -3,7 +3,7 @@ import { homePage } from './controllers/index.js';
 import { organizationsPage, organizationDetailPage, processNewOrganization, newOrganizationForm, organizationValidation, editOrganizationForm, processEditOrganizationForm } from './controllers/organizations.js';
 import { projectsPage, projectDetailPage, showNewProjectForm, processNewProjectForm, projectValidation, editProjectForm, processEditProjectForm } from './controllers/projects.js';
 import { categoriesPage, categoriesDetailPage, assignCategoriesForm, processAssignCategoriesForm, newCategoryForm, processNewCategoryForm, categoryValidation, editCategoryForm, processEditCategoryForm } from './controllers/categories.js';
-import { userRegistrationForm, processRegistrationForm, loginForm, processLoginForm, processLogout } from './controllers/users.js';
+import { userRegistrationForm, processRegistrationForm, loginForm, processLoginForm, processLogout, displayDashboard, requireLogin } from './controllers/users.js';
 import { errorPage } from './controllers/error.js';
 
 
@@ -36,6 +36,7 @@ router.post('/register', processRegistrationForm);
 router.get('/login', loginForm);
 router.post('/login', processLoginForm);
 router.get('/logout', processLogout);
+router.get('/dashboard', requireLogin, displayDashboard );
 
 // error-handling routes
 router.get('/test-error', errorPage);
