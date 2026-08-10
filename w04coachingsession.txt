@@ -1,0 +1,107 @@
+Week 04 Coaching Session Transcript – Onavino
+
+Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today.
+
+---
+
+Topic 1: Handling Form Submissions
+Code Snippet:
+const processNewOrganization = async (req, res) => {
+    const results = validationResult(req);
+    if (!results.isEmpty()) {
+        results.array().forEach((error) => {
+            req.flash('error', error.msg);
+        });
+        return res.redirect('/new-organization');
+    }
+    const { name, description, contactEmail } = req.body;
+    const logoFilename = 'placeholder-logo.png';
+    const organizationId = await createOrganization(name, description, contactEmail, logoFilename);
+    req.flash('success', 'Organization added successfully!');
+    res.redirect(`/organization/${organizationId}`);
+};
+
+Discussion:
+- You explained that redirecting to `/new-organization` re-renders the form since that’s the page where the form lives.
+- This ensures validation errors are displayed consistently.
+
+---
+
+Topic 2: Forms for Updates
+EJS Snippet:
+<form action="/edit-project/<%= projectDetail.project_id %>" method="post">
+    <input type="text" name="title" value="<%= projectDetail.title %>" required>
+    <textarea name="description" required><%= projectDetail.description %></textarea>
+    <input type="text" name="location" value="<%= projectDetail.location %>" required>
+    <input type="date" name="date" value="<%= projectDetail.project_date.toISOString().split('T')[0] %>" required>
+    <select name="organizationId" required>
+        <option value="<%= projectDetail.organization_id %>"><%= projectDetail.name %></option>
+        <% organizations.forEach(org=> { %>
+            <option value="<%= org.organization_id %>"><%= org.name %></option>
+        <% }); %>
+    </select>
+    <button type="submit">Edit Project</button>
+</form>
+
+Discussion:
+- You explained that using a dropdown makes the form cleaner.
+- Since each project is linked to one organization in a many-to-one relationship, showing the current organization first makes sense.
+
+---
+
+Topic 3: Sessions and Flash Messages
+Code Snippet:
+const flashMiddleware = (req, res, next) => {
+    req.flash = function(type, message) {
+        if (!req.session.flash) {
+            req.session.flash = { success: [], error: [], warning: [], info: [] };
+        }
+        if (type && message) {
+            if (!req.session.flash[type]) req.session.flash[type] = [];
+            req.session.flash[type].push(message);
+            return;
+        }
+        if (type && !message) {
+            const messages = req.session.flash[type] || [];
+            req.session.flash[type] = [];
+            return messages;
+        }
+        const allMessages = req.session.flash || { success: [], error: [], warning: [], info: [] };
+        req.session.flash = { success: [], error: [], warning: [], info: [] };
+        return allMessages;
+    };
+    next();
+}
+
+Discussion:
+- You built your own flash middleware for flexibility and control.
+- You weren’t aware of `connect-flash`, but after learning about it, you decided to stick with your own implementation for now.
+
+---
+
+Topic 4: Server-side Validation
+Code Snippet:
+import { body, validationResult } from "express-validator";
+
+const categoryValidation = [
+    body('name')
+        .trim()
+        .notEmpty()
+        .withMessage('Category name is required')
+        .isLength({ min: 3, max: 150 })
+        .withMessage('Category name must be between 3 to 150 characters')
+];
+
+Discussion:
+- You explained that `.notEmpty()` ensures the database `NOT NULL` constraint is respected.
+- Combining it with `.isLength()` enforces meaningful input beyond just non-empty strings.
+
+---
+
+Summary of Key Insights:
+- Redirecting to the form page after validation errors ensures a consistent user experience.
+- Pre-filling update forms with existing data makes editing intuitive, and dropdowns help clarify many-to-one relationships.
+- Custom flash middleware gave you flexibility and deeper understanding, even though libraries like `connect-flash` exist.
+- Server-side validation with both `.notEmpty()` and `.isLength()` prevents crashes and enforces quality input.
+
+End of Transcript

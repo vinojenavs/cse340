@@ -8,6 +8,6 @@
             <li><a href="/project/<%= project.project_id %>"><%= project.title %></a></li>
         <% }); %>
     </ul>
-    <p><a href="/edit-category/<%= categoryDetails.category_id %>">Edit Category Details</a></p>
+    <a href="/edit-category/<%= categoryDetails.category_id %>" class="btn">Edit Category Details</a>
 </main>
 <%- include('partials/footer') %>
