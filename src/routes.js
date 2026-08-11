@@ -36,7 +36,7 @@ router.get('/login', loginForm);
 router.post('/login', processLoginForm);
 router.get('/logout', processLogout);
 router.get('/dashboard', requireLogin, displayDashboard );
-router.get('/users-page', displayAllUsers);
+router.get('/users-page', requireRole('admin'), displayAllUsers);
 
 // error-handling routes
 router.get('/test-error', errorPage);
