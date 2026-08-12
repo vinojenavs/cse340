@@ -1,0 +1,92 @@
+Week 04 Coaching Session Transcript
+
+Copilot: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today. Onavino, this is a safe learning space where you can share your thoughts openly. My role is to support you as your learning coach and software mentor, guiding you through the four required topics with code snippets and discussion. Let’s begin with Topic 1: Handling Form Submissions. Could you paste a non-trivial code snippet from your project that shows how you handle form submissions?
+
+Onavino: 
+const processNewOrganization = async (req, res) => {
+    const results = validationResult(req);
+    if (!results.isEmpty()) {
+        results.array().forEach((error) => {
+            req.flash('error', error.msg);
+        });
+        return res.redirect('/new-organization');
+    }
+    const { name, description, contactEmail } = req.body;
+    const logoFilename = 'placeholder-logo.png';
+    const organizationId = await createOrganization(name, description, contactEmail, logoFilename);
+    req.flash('success', 'Organization added successfully!');
+    res.redirect(`/organization/${organizationId}`);
+};
+
+Copilot: Great snippet! Why did you choose to redirect back to `/new-organization` after validation errors instead of re-rendering the form directly?
+
+Onavino: /new-organization is the name of the form page.
+
+Copilot: Perfect, thanks for clarifying. Here’s another question: What middleware or setup did you use to ensure that `req.body` is populated with those values?
+
+Onavino: While processing the organization page, there is a function organizationValidation that checks if the results are passed correctly. It looks like this router.post('/new-organization', organizationValidation, processNewOrganization);
+
+Copilot: That’s a key detail. Nice design choice. Let’s transition into Topic 2: Forms for Updates. Could you paste an EJS snippet from your project that shows how you populate an update form?
+
+Onavino: 
+<label for="description">Description</label>
+<textarea name="description" id="description" required><%= projectDetail.description %></textarea>
+
+Copilot: Nice snippet! Why did you decide to use EJS templating for update forms instead of handling updates with client-side JavaScript frameworks?
+
+Onavino: I don't know if I understand you correctly.
+
+Copilot: Let me reframe: What benefits do you see in using EJS server-side rendering for update forms compared to a client-side approach?
+
+Onavino: I used EJS cause of course requirements, could you ask me something else?
+
+Copilot: Got it. Here’s another angle: When you pre-fill values in an update form, how do you make sure the user’s changes don’t accidentally overwrite important data?
+
+Onavino: Are you asking with concerns of what goes into the database or with concerns to the information itself?
+
+Copilot: With concerns about what eventually goes into the database. How do you decide which fields should be trusted and written back, and which ones should be protected?
+
+Onavino: Express middleware helps validate the kind of data that goes into the system. All fields except the organization id can be edited. I don't know if that answers your question.
+
+Copilot: That does answer it! Let’s move forward to Topic 3: Sessions and Flash Messages. Could you paste a non-trivial code snippet showing how you set up sessions or flash messages?
+
+Onavino: 
+if (!errors.isEmpty()) {
+    errors.array().forEach((error) => {
+        req.flash('error', error.msg);
+    });
+    return res.redirect('/new-project');
+}
+
+Copilot: Solid example. How do you configure sessions so that flash messages survive a redirect?
+
+Onavino: I store them in a session like this:
+if (type && message) {
+    if (!req.session.flash[type]) {
+        req.session.flash[type] = [];
+    }
+    req.session.flash[type].push(message);
+    return;
+}
+
+Copilot: That’s a neat implementation. Let’s move on to Topic 4: Server-side Validation. Could you paste a non-trivial code snippet showing how you perform server-side validation?
+
+Onavino: 
+const categoryValidation = [
+    body('name')
+        .trim()
+        .notEmpty()
+        .withMessage('Category name is required')
+        .isLength({ min: 3, max: 150 })
+        .withMessage('Category name must be between 3 to 150 characters')
+]
+
+Copilot: Strong validation snippet. Why did you decide to enforce both a minimum and maximum length?
+
+Onavino: I used minimum and maximum because it protects the database from accepting data that is outside what the database accepts.
+
+Copilot: That makes perfect sense. We’ve now covered all four required topics. That means our coaching session is complete! 🎉 Would you like me to generate the transcript file?
+
+Onavino: Yes please.
+
+Copilot: Great, here’s the transcript in `.txt` format.

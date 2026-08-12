@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
-import { createUser, authenticateUser, getAllusers } from '../models/users.js';
+import { createUser, authenticateUser, getAllusers, addVolunteer, removeVolunteer, getProjectByUserId, checkVolunteer } from '../models/users.js';
 import { body, validationResult } from 'express-validator';
+import { getProjectDetails } from '../models/projects.js';
 
 // const userValidation = [
 //     body('name')
@@ -88,7 +89,8 @@ const requireLogin = async (req, res, next) => {
 
 const displayDashboard = async (req, res) => {
     const user = req.session.user;
-    res.render('dashboard', { title: 'Dashboard', name: user.name, email: user.email })
+    const volunteeredProjects = await getProjectByUserId(user.user_id);
+    res.render('dashboard', { title: 'Dashboard', name: user.name, email: user.email, volunteeredProjects })
 };
 
 const requireRole = (role) => {
@@ -103,12 +105,75 @@ const requireRole = (role) => {
         }
         next();
     }
-}
+};
 
 const displayAllUsers = async (req, res) => {
     const title = 'Users Page';
     const users = await getAllusers();
     res.render('users-page', { title, users });
+};
+
+const requireNonVolunteer = async (req, res, next) => {
+    const userId = req.session.user.user_id;
+    const projectId = req.params.id;
+    const exists = await checkVolunteer(userId, projectId);
+    if (exists) {
+        req.flash('error', 'You are already volunteering for this project');
+        return res.redirect(`/project/${projectId}`);
+    }
+    next();
+};
+
+const requireVolunteer = async (req, res, next) => {
+    const userId = req.session.user.user_id;
+    const projectId = req.params.id;
+    const exists = await checkVolunteer(userId, projectId);
+    if (!exists) {
+        req.flash('error', 'You are not volunteering for this project');
+        return res.redirect(`/project/${projectId}`);
+    }
+    next();
+};
+
+const volunteer = async (req, res) => {
+    const userId = req.session.user.user_id;
+    const projectId = req.params.id;
+    try {
+        await addVolunteer(userId, projectId);
+        req.flash('success', 'You are now volunteering for this project');
+        res.redirect(`/project/${projectId}`);
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'Unable to volunteer at this time.');
+        res.redirect(`/project/${projectId}`);
+    }
+};
+
+const unVolunteer = async (req, res) => {
+    const projectId = req.params.id;
+    try {
+        await removeVolunteer(projectId);
+        req.flash('success', 'You are no longer volunteering for this project');
+        res.redirect(`/project/${projectId}`);
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'An error occured please try again.');
+        res.redirect(`/project/${projectId}`);
+    }
+};
+
+const unVolunteerFromDashBoard = async (req, res) => {
+    const projectId = req.params.id;
+    const projectDetail = await getProjectDetails(projectId)
+    try {
+        await removeVolunteer(projectId);
+        req.flash('success', `You removed yourself as a volunteer from ${projectDetail.title}`);
+        res.redirect(`/dashboard`);
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'An error occured please try again.');
+        res.redirect(`/dashboard`);
+    }
 }
 
-export { userRegistrationForm, processRegistrationForm, loginForm, processLoginForm, processLogout, requireLogin, displayDashboard, requireRole, displayAllUsers }
+export { userRegistrationForm, processRegistrationForm, loginForm, processLoginForm, processLogout, requireLogin, displayDashboard, requireRole, displayAllUsers, volunteer, unVolunteer, unVolunteerFromDashBoard, requireVolunteer, requireNonVolunteer }

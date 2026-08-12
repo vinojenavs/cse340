@@ -11,6 +11,17 @@
             <p><a href="/category/<%= category.category_id%>"><%= category.name %></a></p>
         <% }) %>
     </p>
+    <% if (isLoggedIn && !isVolunteering) { %>
+        <form action="/project/<%= projectDetail.project_id %>/volunteer" method="post">
+            <button type="submit">Volunteer for Project</button>
+        </form>
+    <% } %>
+    <% if (isLoggedIn && isVolunteering) { %>
+        <h3>You are Volunteering</h3>
+        <form action="/project/<%= projectDetail.project_id %>/unvolunteer" method="post">
+            <button type="submit">Remove Self as Volunteer</button>
+        </form>
+    <% } %>
     <% if (user && user.role_name === 'admin') { %>
         <a href="/assign-categories/<%= projectDetail.project_id %>" class="btn">Edit Categories</a>
         <a href="/edit-project/<%= projectDetail.project_id %>" class="btn">Edit Projects</a>

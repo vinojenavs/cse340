@@ -3,6 +3,16 @@
     <h1><%= title %></h1>
     <p>Name: <%= name %></p>
     <p>Username: <%= email %></p>
+    <h3>Volunteered Projects</h3>
+    <ul>
+        <% volunteeredProjects.forEach(project=> { %>
+            <li>
+                <a href="/project/<%= project.project_id %>"><%= project.title %></a>
+                <form action="/project/<%= project.project_id %>/unvolunteerdb" method="post">
+                    <button type="submit">Remove</button>
+                </form></li>  
+        <% }) %>
+    </ul>
     <% if (user && user.role_name === 'admin') { %>
         <a href="/users-page" class="btn">View Registered Users</a>
     <% } %>

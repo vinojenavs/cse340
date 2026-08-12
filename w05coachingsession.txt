@@ -1,0 +1,92 @@
+Week 05 Coaching Session Transcript
+
+Coach: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say "I don't know" or "I made a mistake." That's the fastest way we'll learn today. Could you confirm your name for me?
+
+Onavino: My name is Onavino
+
+Coach: Great, thank you Onavino! This is a safe learning space. Let’s start with Topic 1: Registration and Password Hashing. Could you paste a non-trivial code snippet showing password hashing?
+
+Onavino: 
+try {
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+    const userId = await createUser(name, email, passwordHash);
+    
+    req.flash('success', 'Registration successfull! Please log in.');
+    res.redirect('/');
+}
+
+Coach: Nice snippet! Why did you choose bcrypt with 10 salt rounds, and what trade-offs exist?
+
+Onavino: The salt rounds determines how many times the hashing program runs. Decreasing it makes the password not as secure but increasing it makes it more secure but slower.
+
+Coach: Exactly right. One more angle: what fields did you include in your users table and why?
+
+Onavino: The data structure consist of all you've listed. I only included name, table and email because those are the information needed from the user. The role is set to default 'user', id is serial and createdAt is automatic.
+
+Coach: That makes sense. Let’s move to Topic 2: Login and Sessions. Could you paste a snippet showing login logic and session management?
+
+Onavino:
+const processLoginForm = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await authenticateUser(email, password);
+        if (user) {
+            req.session.user = user;
+            req.flash('success', 'Login successful!');
+            if (res.locals.NODE_ENV === 'development') {
+                console.log('User logged in:', user);
+            }
+            res.redirect('/dashboard');
+        } else {
+            req.flash('error', 'Invalid email or password.');
+            res.redirect('/login');
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        req.flash('error', 'An error occurred during login. Please try again.');
+        res.redirect('/login');
+    }
+};
+
+Coach: Nice work! When you store req.session.user = user, what info do you want to keep, and why might storing too much be risky?
+
+Onavino: Authenticate user stores the user id, user email and role name. It does not store the password. I do not know why it might be too risky to store too much.
+
+Coach: Great answer. Storing too much can expose sensitive data or make sessions inefficient. Keeping only essentials is best. Let’s move to Topic 3: Protected Access Middleware. Could you paste a snippet?
+
+Onavino:
+const requireRole = (role) => {
+    return (req, res, next) => {
+        if (!req.session || !req.session.user) {
+            req.flash('error', 'You must be logged in to access this page')
+            return res.redirect('/login')
+        }
+        if (req.session.user.role_name !== role) {
+            req.flash('error', 'You do not have permission to access this page.')
+            return res.redirect('/dashboard')
+        }
+        next();
+    }
+}
+
+Coach: Solid middleware! How would you adapt this to allow multiple roles?
+
+Onavino: I do not know. Guess I didn't think of it.
+
+Coach: That’s fine! You could check if the user’s role is included in an array of allowed roles. Example: requireRoles(['admin','editor']). Then your route would look like router.get('/users-page', requireRoles(['admin','editor']), displayAllUsers).
+
+Onavino: Just to be clear on the previous topic the route would look like this == router.get('/users-page', requireRole(['admin',  'editor']), displayAllUsers)
+
+Coach: Yes, exactly. Now let’s move to Topic 4: Protected Access Links and Navigation. Could you paste a snippet?
+
+Onavino:
+<% if (user && user.role_name === 'admin') { %>
+        <a href="/new-category" class="btn">Add a new Category</a>
+<% } %>
+
+Coach: Perfect! My question: how do you think hiding links in the UI compares to protecting routes with middleware?
+
+Onavino: I think the most important is protecting users using middleware. Hiding these links is also essential because there is no use giving users links they do not have access to.
+
+Coach: That’s a thoughtful perspective. Middleware enforces safety, while conditional rendering ensures clarity. Together they complement each other. We’ve now covered all four topics—registration and password hashing, login and sessions, protected access middleware, and protected access links/navigation. That means our coaching session is complete.

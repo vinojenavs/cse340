@@ -3,7 +3,7 @@ import { homePage } from './controllers/index.js';
 import { organizationsPage, organizationDetailPage, processNewOrganization, newOrganizationForm, organizationValidation, editOrganizationForm, processEditOrganizationForm } from './controllers/organizations.js';
 import { projectsPage, projectDetailPage, showNewProjectForm, processNewProjectForm, projectValidation, editProjectForm, processEditProjectForm } from './controllers/projects.js';
 import { categoriesPage, categoriesDetailPage, assignCategoriesForm, processAssignCategoriesForm, newCategoryForm, processNewCategoryForm, categoryValidation, editCategoryForm, processEditCategoryForm } from './controllers/categories.js';
-import { userRegistrationForm, processRegistrationForm, loginForm, processLoginForm, processLogout, displayDashboard, requireLogin, requireRole, displayAllUsers } from './controllers/users.js';
+import { userRegistrationForm, processRegistrationForm, loginForm, processLoginForm, processLogout, displayDashboard, requireLogin, requireRole, displayAllUsers, volunteer, unVolunteer, unVolunteerFromDashBoard, requireVolunteer, requireNonVolunteer } from './controllers/users.js';
 import { errorPage } from './controllers/error.js';
 
 
@@ -37,6 +37,9 @@ router.post('/login', processLoginForm);
 router.get('/logout', processLogout);
 router.get('/dashboard', requireLogin, displayDashboard );
 router.get('/users-page', requireRole('admin'), displayAllUsers);
+router.post('/project/:id/volunteer', requireLogin, requireNonVolunteer, volunteer);
+router.post('/project/:id/unvolunteer', requireLogin, requireVolunteer, unVolunteer);
+router.post('/project/:id/unvolunteerdb', requireLogin, requireVolunteer, unVolunteerFromDashBoard);
 
 // error-handling routes
 router.get('/test-error', errorPage);

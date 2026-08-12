@@ -109,3 +109,16 @@ CREATE TABLE users (
 	REFERENCES roles(role_id)
 	ON DELETE CASCADE
 );
+
+CREATE TABLE volunteer (
+	user_id INT NOT NULL,
+	project_id INT NOT NULL,
+	CONSTRAINT fk_user_id
+	FOREIGN KEY (user_id)
+	REFERENCES users (user_id)
+	ON DELETE CASCADE,
+	CONSTRAINT fk_project_id
+	FOREIGN KEY (project_id)
+	REFERENCES projects (project_id)
+	ON DELETE CASCADE
+);

@@ -65,4 +65,43 @@ const authenticateUser = async (email, password) => {
     return safeUser;
 };
 
-export { createUser, authenticateUser, getAllusers }
+const addVolunteer = async (userId, projectId) => {
+    const query = `
+        INSERT INTO volunteer (user_id, project_id)
+        VALUES ($1, $2);
+    `;
+    const result = await db.query(query, [userId, projectId]);
+    return result.rows[0];
+}
+
+const removeVolunteer = async (projectId) => {
+    const query = `
+        DELETE FROM volunteer
+        WHERE project_id = $1;
+    `;
+    await db.query(query, [projectId]);
+}
+
+const getProjectByUserId = async (userId) => {
+    const query = `
+        SELECT p.project_id, p.title
+        FROM projects p
+        JOIN volunteer v ON p.project_id = v.project_id
+        WHERE v.user_id = $1;
+    `;
+    const queryParams = [userId];
+    const results = await db.query(query, queryParams);
+    return results.rows;
+};
+
+const checkVolunteer = async (userId, ProjectId) => {
+    const query = `
+        SELECT * FROM volunteer 
+        WHERE user_id = $1 AND project_id =$2;
+    `;
+    const queryParams = [userId, ProjectId];
+    const result = await db.query(query, queryParams);
+    return result.rows[0];
+};
+
+export { createUser, authenticateUser, getAllusers, addVolunteer, removeVolunteer, getProjectByUserId, checkVolunteer }
